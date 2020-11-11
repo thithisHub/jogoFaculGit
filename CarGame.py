@@ -64,7 +64,7 @@ def game_loop():
         game_display.blit(divisoria,(0,100))
         estrada.blit(superficieFaixa,(posicaoFaixa,235))
         estrada.blit(superficieFaixa2,(posicaoFaixa2,235))
-        posicaoEstrada -= 1
+        posicaoEstrada -= 3
         posicaoFaixa -= 2
         if posicaoFaixa <= -1100:
             posicaoFaixa  = 1100
@@ -73,7 +73,7 @@ def game_loop():
             posicaoFaixa2  = 1100  
         if posicaoEstrada <= -1100:
             posicaoEstrada = 1100
-        posicaoEstrada2 -= 1    
+        posicaoEstrada2 -= 3
         if posicaoEstrada2 <= -1100:
             posicaoEstrada2 = 1100
         
