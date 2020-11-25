@@ -167,10 +167,21 @@ def game_loop(game_display , NomePlayer):
     game_display.blit(gameOver,(0,0)) 
     fonte = pygame.font.Font(None , 90)
     placar = fonte.render(("Sua pontuação final foi de: " + str(pontos)) , (0,0) ,(255,255,255))
+    fonte = pygame.font.Font(None , 40)
+    MensagemMenu = fonte.render("Pressione ESC para voltar para o menu principal", (0,0) ,(255,255,255)) 
     game_display.blit(placar,(70,300)) 
+    game_display.blit(MensagemMenu,(70,500)) 
     arquivo = open("Ranking.txt", "a")
     arquivo.writelines("-> " + NomePlayer + ":" + str(pontos) + "\n")
     arquivo.close()
+    while True:
+        pygame.display.flip()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            elif event.type == pygame.KEYDOWN:               
+                if event.key == pygame.K_ESCAPE:
+                    menuTela(screen)  
 #game_loop()
 def nomePlayer(screen):
     fonte = pygame.font.Font(None , 30)
@@ -212,27 +223,47 @@ square2 = pygame.Rect((409,456), (300,61))
 containerBotao1 = pygame.Surface((300,61),pygame.SRCALPHA)
 containerBotao2 = pygame.Surface((300,61),pygame.SRCALPHA)
 
+class ItemPlacar:
+    def __init__(self,nome, pontos):
+        self.nome = nome
+        self.pontos = pontos
+       
+
+    
+
 def ranking(screen):
+    arrayOrdena = []
     y = 50
     fonte = pygame.font.Font(None , 50)
     screen.fill((0,0,0))
     rankingLabel = fonte.render("Ranking : ", 0,(255,255,255))
     screen.blit(rankingLabel,(420,10))
     pygame.display.flip()
-    arquivo = open("Ranking.txt","r")
+    arquivo = open("Ranking.txt","a+")
     leitura = [x.strip() for x in arquivo]
-    for player in leitura:
-        label = fonte.render(player,0,(255,255,255))  
-        screen.blit(label,(420,y))
-        y += 40 
-    pygame.display.flip()
+    if len(leitura) > 0:
+        for player in leitura:
+            nomeSplit = player.split(":")
+            arrayOrdena.append(ItemPlacar(nomeSplit[0], nomeSplit[1]))
+        
+        print(arrayOrdena) 
+        arrayOrdena.sort(key=lambda x: x.pontos, reverse=True)   
+        for item in arrayOrdena:     
+            label = fonte.render(item.nome + ":" + item.pontos,0,(255,255,255))  
+            screen.blit(label,(420,y))
+            y += 40 
+        pygame.display.flip()
 
     
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-
+            elif event.type == pygame.KEYDOWN:
+                print("xavasca")
+                if event.key == pygame.K_ESCAPE:
+                    menuTela(screen)
+                    
 def makeButton(cur):
     if square.collidepoint(cur):
         pygame.display.flip()
@@ -242,19 +273,29 @@ def makeButton(cur):
         ranking(screen)
 
 
-while True:
-   
-    screen.blit(containerBotao1, square)
-    screen.blit(containerBotao2, square2)
-    pygame.display.update()
-    clock.tick(60)
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1: 
-                makeButton(event.pos)
+def menuTela(screen):
+    screen = pygame.display.set_mode((1100, 700),0,32)
+    clock = pygame.time.Clock()
+    menu = pygame.image.load("Menu.png")
+    screen.blit(menu,(0,0))
+    square = pygame.Rect((409,355), (300,61))
+    square2 = pygame.Rect((409,456), (300,61))
+    containerBotao1 = pygame.Surface((300,61),pygame.SRCALPHA)
+    containerBotao2 = pygame.Surface((300,61),pygame.SRCALPHA)
+    pygame.display.flip()
+    while True:  
+        screen.blit(containerBotao1, square)
+        screen.blit(containerBotao2, square2)
+        pygame.display.update()
+        clock.tick(60)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1: 
+                    makeButton(event.pos)
 
-pygame.display.update()
-pygame.event.get()
+    pygame.display.update()
+    pygame.event.get()
+menuTela(screen)    
 #pygame.quit()
