@@ -1,0 +1,3 @@
+-> Thiago:4000
+-> Gabriel:7000
+-> Leonardo:4300

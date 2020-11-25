@@ -239,7 +239,7 @@ def ranking(screen):
     rankingLabel = fonte.render("Ranking : ", 0,(255,255,255))
     screen.blit(rankingLabel,(420,10))
     pygame.display.flip()
-    arquivo = open("Ranking.txt","a+")
+    arquivo = open("Ranking.txt","r")
     leitura = [x.strip() for x in arquivo]
     if len(leitura) > 0:
         for player in leitura:
@@ -260,7 +260,6 @@ def ranking(screen):
             if event.type == pygame.QUIT:
                 pygame.quit()
             elif event.type == pygame.KEYDOWN:
-                print("xavasca")
                 if event.key == pygame.K_ESCAPE:
                     menuTela(screen)
                     
