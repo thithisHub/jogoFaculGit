@@ -1,10 +1,22 @@
 import pygame
+import random
+import contextvars
 
 pygame.init()
 window_width = 1100
 window_height = 700
 
+arrayposicao = [115,130,215,270,375,315,415,140,240,340,420,400]
+class Buraco:
+    def __init__(self,posicaoPx, posicaoPy):
+        self.posicaox = posicaoPx
+        self.posicaoy = posicaoPy
+        self.buracoimg = pygame.image.load("buraco.png")
+        self.buracoimg = pygame.transform.scale(self.buracoimg,(180,130))
 
+    def printBuraco(self,tela):
+        tela.blit(self.buracoimg,(self.posicaox, self.posicaoy))
+        
 
 
 def car(x, y, game_display , car_running):
@@ -40,11 +52,6 @@ def game_loop(game_display):
     superficieDivisoriaBaixo = pygame.Surface((1100,15))
     superficieDivisoriaBaixo.blit(divisoria,(0,0))
     
-    buraco =  pygame.image.load("buraco.png")
-    buraco = pygame.transform.scale(buraco,(200,150))
-   
-    
-
     estrada = pygame.Surface((1100,500))
     estrada.blit(rua,(0,0))
     pygame.display.flip()
@@ -53,16 +60,28 @@ def game_loop(game_display):
     running = True
     posicaoEstrada = 0
     posicaoEstrada2 = 1099
-    
+    segundosDesdeUltimoBuraco = 0
     
     FPS =60
+    buracoEstrada = Buraco(1100,115)
+    buracoEstrada.printBuraco(game_display)  
+
+    buracoEstrada2 = Buraco(1100,115)
+    buracoEstrada2.printBuraco(game_display) 
+
+    buracoEstrada3 = Buraco(1100,115)
+    buracoEstrada3.printBuraco(game_display) 
+
+    buracoAtual = 0
     while running:
         fundo.fill(pygame.Color(0,100,10))
         placar = fonte.render(("Pontuação: " + str(pontos)) , (0,0) ,(255,255,255))
         pontosFps += 1
         if pontosFps % 60 == 0:
             pontos +=100
+            segundosDesdeUltimoBuraco += 1
         fundo.blit(placar,(0,35))
+                  
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -79,7 +98,7 @@ def game_loop(game_display):
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                     x_change = 0
-            
+                
         
         game_display.blit(fundo,(0,0))
         posicaoEstrada -= 5
@@ -95,10 +114,34 @@ def game_loop(game_display):
         game_display.blit(superficieDivisoria,(0,100))
         game_display.blit(superficieDivisoriaBaixo,(0,585))
         game_display.blit(superficieDivisoriaBaixo,(0,585))
-        
-        game_display.blit(buraco,(0,100))        
+
+        buracoEstrada.posicaox -= 5
+        buracoEstrada2.posicaox -= 5
+        buracoEstrada3.posicaox -= 5
+        buracoEstrada.printBuraco(game_display)  
+        buracoEstrada2.printBuraco(game_display) 
+        buracoEstrada3.printBuraco(game_display)      
+        if segundosDesdeUltimoBuraco >= 2:
+            sorteio = random.randint(0,1)
+            if sorteio == 1:
+                sorteioposicao = random.randint(0,11)
+                if buracoAtual == 0:
+                    buracoEstrada = Buraco(1100,arrayposicao[sorteioposicao])
+                    buracoEstrada.printBuraco(game_display)  
+                    buracoAtual += 1
+                elif buracoAtual == 1:
+                    buracoEstrada2 = Buraco(1100,arrayposicao[sorteioposicao]) 
+                    buracoEstrada2.printBuraco(game_display)   
+                    buracoAtual += 1
+                elif buracoAtual == 2:
+                    buracoEstrada3 = Buraco(1100,arrayposicao[sorteioposicao])
+                    buracoEstrada3.printBuraco(game_display)   
+                    buracoAtual = 0   
+                             
+                            
+                segundosDesdeUltimoBuraco = 0    
+                #pygame.display.flip()
         car(0, y_carro , game_display , car_running)
-        
         
         
         pygame.display.flip()
